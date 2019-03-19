@@ -1,4 +1,4 @@
-# points_exchange_mall_weapp
+# gif-emoij-weapp
 
 > A Mpvue project
 
