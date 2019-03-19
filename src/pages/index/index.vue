@@ -21,7 +21,7 @@
         </div>
         <div class="emoij-list">
           <div class="emoij-item" v-for="(emoij, index) in emoij_list" :key="index">
-            <image :src="emoij.default_url"></image>
+            <image mode="aspectFit" :src="emoij.default_url"></image>
           </div>
         </div>
       </div>
@@ -38,7 +38,12 @@
           {
             id: 1,
             name: '名称',
-            default_url: '/static/test/ok.jpg'
+            default_url: '/static/test/6_6c5a89ec586e4c8a161835697b27e098.gif'
+          },
+          {
+            id: 1,
+            name: '名称',
+            default_url: '/static/test/6_6c5a89ec586e4c8a161835697b27e098.gif'
           },
           {
             id: 1,
@@ -48,7 +53,12 @@
           {
             id: 1,
             name: '名称',
-            default_url: '/static/test/ok.jpg'
+            default_url: '/static/test/6_6c5a89ec586e4c8a161835697b27e098.gif'
+          },
+          {
+            id: 1,
+            name: '名称',
+            default_url: '/static/test/6_6c5a89ec586e4c8a161835697b27e098.gif'
           },
           {
             id: 1,
@@ -58,17 +68,7 @@
           {
             id: 1,
             name: '名称',
-            default_url: '/static/test/ok.jpg'
-          },
-          {
-            id: 1,
-            name: '名称',
-            default_url: '/static/test/ok.jpg'
-          },
-          {
-            id: 1,
-            name: '名称',
-            default_url: '/static/test/ok.jpg'
+            default_url: '/static/test/6_6c5a89ec586e4c8a161835697b27e098.gif'
           },
           {
             id: 1,
