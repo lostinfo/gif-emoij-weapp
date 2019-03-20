@@ -3,7 +3,9 @@
     "pages/index/main",
     "pages/community/main",
     "pages/user/main",
-    "pages/search/main"
+    "pages/search/main",
+    "pages/emoij_info/main",
+    "pages/create_emoij/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

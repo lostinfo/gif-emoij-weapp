@@ -8,7 +8,7 @@ label, p{
 }
 
 .container{
-  background-color: #FFFFFF;
+  background-color: #F1F1F1;
 }
 
 .container.fixed{
@@ -355,3 +355,95 @@ label, p{
 }
 
 /* transparent btn */
+
+/* emoij */
+
+.emoij-list{
+  width: 100%;
+  padding: 0 30rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.emoij-wrapper{
+  width: 100%; padding: 0 30rpx;
+  box-sizing: border-box;
+}
+.emoij-item{
+  width: 690rpx;
+  background-color: #FFFFFF;
+  border-radius: 10rpx;
+  overflow: hidden;
+  margin-top: 30rpx;
+}
+.emoij-item .emoij{
+  margin: 20rpx;
+  width: 650rpx;
+  height: 650rpx;
+}
+.emoij-item .emoij-item-content{
+  width: 690rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-bottom:20rpx;
+}
+.emoij-item .emoij-item-content .user-avatar{
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin-left: 20rpx;
+  margin-right: 20rpx;
+}
+.emoij-item .emoij-item-content .user-n-t{
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.emoij-item .emoij-item-content .user-n-t .nickname{
+  font-size: 26rpx;
+  color: #222222;
+}
+.emoij-item .emoij-item-content .user-n-t .created-at{
+  font-size: 24rpx;
+  color: #999999;
+}
+.emoij-item .emoij-item-content .emoij-icon{
+  display: flex;
+  flex-direction: row;
+  font-size: 24rpx;
+  color: #999999;
+  width: 130rpx;
+  overflow: hidden;
+}
+.emoij-item .emoij-item-content .emoij-icon .icon{
+  width: 30rpx;
+  height: 30rpx;
+}
+.emoij-item .emoij-item-content .emoij-icon p{
+  font-size: 24rpx;
+  color: #999999;
+  padding-left: 10rpx;
+}
+.emoij-actions{
+  margin-top: 30rpx;
+  display: flex;
+  flex-direction: row;
+}
+.emoij-actions .emoij-action{
+  width: 330rpx;
+  height: 60rpx;
+  box-sizing: border-box;
+  background-color: #FFE000;
+  border-radius: 10rpx;
+  color: #000000;
+  font-size: 24rpx;
+  line-height: 60rpx;
+  text-align: center;
+}
+.emoij-actions .emoij-action:nth-child(2){
+  margin-left: 30rpx;
+}
+
+/* emoij */
