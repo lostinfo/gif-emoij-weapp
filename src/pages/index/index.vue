@@ -18,29 +18,23 @@
       <div class="block-content">
         <div class="emoij-list">
           <div class="emoij-item" v-for="(emoij, index) in emoij_list" :key="index" :data-id="emoij.id" @click="toEmoijInfo">
-            <image class="emoij" mode="aspectFit" :src="emoij.emoij_url"></image>
+            <image class="emoij" mode="aspectFit" :src="emoij.cover_url"></image>
             <div class="emoij-item-content">
-              <image class="user-avatar" :src="emoij.user.avatar"></image>
+              <image class="user-avatar" :src="emoij.cover_url"></image>
               <div class="user-n-t">
-                <p class="nickname">{{emoij.user.nickname}}</p>
-                <p class="created-at">{{emoij.created_at}}</p>
+                <p class="nickname">no name</p>
+                <p class="created-at">no datetime</p>
               </div>
               <div class="emoij-icon">
                 <image src="/static/images/vote.png" class="icon"></image>
-                <p>{{emoij.vote_count}}</p>
+                <p>999+</p>
               </div>
               <div class="emoij-icon">
                 <image src="/static/images/view.png" class="icon"></image>
-                <p>{{emoij.view_count}}</p>
+                <p>999+</p>
               </div>
             </div>
           </div>
-        </div>
-        <div v-if="emoij_empty" class="scroll-list-empty">
-          <empty></empty>
-        </div>
-        <div v-if="emoij_list.length > 0" class="scroll-list-footer">
-          <scroll-footer :loading="emoij_loading" :has-more="emoij_has_more"></scroll-footer>
         </div>
       </div>
     </div>
@@ -54,117 +48,63 @@
     name: "index",
     data() {
       return {
-        emoij_list: [
-          {
-            id: 1,
-            emoij_url: 'https://app.xuty.tk/static/upload/6_6c5a89ec586e4c8a161835697b27e098.gif',
-            created_at: '03-20 18:40',
-            user: {
-              avatar: '/static/test/avatar.jpg',
-              nickname: '热心网页系五五'
-            },
-            view_count: '999+',
-            vote_count: '9999+'
-          },
-          {
-            id: 1,
-            emoij_url: 'https://app.xuty.tk/static/upload/6_6c5a89ec586e4c8a161835697b27e098.gif',
-            created_at: '03-20 18:40',
-            user: {
-              avatar: '/static/test/avatar.jpg',
-              nickname: '热心网页系五五'
-            },
-            view_count: '999+',
-            vote_count: '9999+'
-          },
-          {
-            id: 1,
-            emoij_url: 'https://app.xuty.tk/static/upload/6_6c5a89ec586e4c8a161835697b27e098.gif',
-            created_at: '03-20 18:40',
-            user: {
-              avatar: '/static/test/avatar.jpg',
-              nickname: '热心网页系五五'
-            },
-            view_count: '999+',
-            vote_count: '9999+'
-          },
-          {
-            id: 1,
-            emoij_url: 'https://app.xuty.tk/static/upload/6_6c5a89ec586e4c8a161835697b27e098.gif',
-            created_at: '03-20 18:40',
-            user: {
-              avatar: '/static/test/avatar.jpg',
-              nickname: '热心网页系五五'
-            },
-            view_count: '999+',
-            vote_count: '9999+'
-          },
-          {
-            id: 1,
-            emoij_url: 'https://app.xuty.tk/static/upload/6_6c5a89ec586e4c8a161835697b27e098.gif',
-            created_at: '03-20 18:40',
-            user: {
-              avatar: '/static/test/avatar.jpg',
-              nickname: '热心网页系五五'
-            },
-            view_count: '999+',
-            vote_count: '9999+'
-          },
-        ],
-        emoijCurrentPage: 1,
-        emoijPageSize: 8,
-        produtcTotal: 24,
-        emoij_empty: false,
-        emoij_loading: false,
+        emoij_list: [],
       }
     },
     components: {
       scrollFooter
     },
     computed: {
-      emoij_has_more: function () {
-        let that = this
-        return that.emoijCurrentPage * that.emoijPageSize < that.produtcTotal
-      }
+
     },
     created() {
 
     },
     mounted() {
-
+      this.getEmoijList()
     },
     onReachBottom() {
-      this.loadMore()
+
     },
     onUnload() {
       let that = this
-      that.emoij_list = that.emoij_list.slice(0, 5)
-      that.emoijCurrentPage = 1
-      that.emoijPageSize = 8
-      that.produtcTotal = 24
-      that.emoij_empty = false
-      that.emoij_loading = false
+      that.emoij_list = []
     },
     methods: {
-      loadMore() {
-        let that = this
-        if (!that.emoij_has_more) return
-        that.emoijCurrentPage++
-        that.getEmoijList()
-      },
       getEmoijList() {
         let that = this
-        that.emoij_loading = true
-        setTimeout(() => {
-          that.emoij_loading = false
-          that.emoij_list = that.emoij_list.concat(that.emoij_list)
-        }, 2000)
+        wsApi.showLoading()
+        that.$http.get('/emoji/list').then(res => {
+          wsApi.hideLoading()
+          that.emoij_list = res
+        })
       },
       toEmoijInfo(event) {
         let id = event.mp.currentTarget.dataset.id
         wsApi.navigateTo({
           url: '/pages/emoij_info/main?id=' + id
         })
+      },
+      onGetUserInfo(event) {
+        if (event.mp.detail.userInfo === undefined) {
+          wsApi.toastError('未授权 登录失败')
+          return false
+        }
+        let that = this
+        wsApi.login()
+          .then(res => {
+            let code = res.code
+            wsApi.showLoading()
+            that.$http.get('/user/login', {...event.mp.detail.userInfo, code})
+              .then(res => {
+                that.$store.commit('setUser', event.mp.detail.userInfo)
+                console.log(that.$store.state)
+                wsApi.hideLoading()
+                wsApi.toastSuccess('登录成功')
+              }).catch(err => {
+                console.log(err)
+            })
+          })
       }
     },
   }

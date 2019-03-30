@@ -4,12 +4,7 @@ let fly = new Fly()
 
 // fly.config.headers = {}
 
-// dev
-// fly.config.baseURL = 'http://pmall.localhost/api'
-fly.config.baseURL = 'http://taiziling.localhost'
-
-// prod
-// fly.config.baseURL = 'https://hdy.enwei.com.cn/api'
+fly.config.baseURL = 'https://emoij.it9g.com:9527/api/v1'
 
 fly.config.headers = {
   'Content-Type': 'application/json',
@@ -21,7 +16,7 @@ import store from '../store'
 fly.interceptors.request.use((request)=>{
   let authorization = store.state.authorization
   if (authorization !== null) {
-    request.headers['Authorization'] = 'Bearer ' + authorization
+    request.headers['Authorization'] = authorization
   }
   return request
 })
@@ -30,35 +25,24 @@ fly.interceptors.request.use((request)=>{
 fly.interceptors.response.use(
   (response) => {
     //只将请求结果的data字段返回
-    return response.data
+    if (response.headers.hasOwnProperty('authorization')) {
+      store.commit('setAuthorization', response.headers.authorization[0])
+    }
+    return new Promise((resolve, reject) => {
+      if (response.data.code == 200) {
+        resolve(response.data.data)
+      } else {
+        reject(response)
+      }
+    })
   },
   (err) => {
     //发生网络错误后会走到这里
     return new Promise((resolve, reject) => {
-      let message = ''
-      switch (err.status) {
-        case 422:
-          message = err.response.data.message
-          break
-        case 401:
-          store.commit('unsetUser')
-          store.commit('unsetAuthorization')
-          wsApi.navigateTo({
-            url: '/pages/login/main'
-          })
-          message = '请登录'
-          break
-        default:
-          message = '未知错误'
-          break
-      }
+      let message = '网络错误'
       wsApi.toastError(message)
-      let response_data = null
-      if (err.response !== undefined && err.response.data != undefined) {
-        response_data = err.response.data
-      }
       setTimeout(() => {
-        reject(response_data)
+        reject(err.response)
       }, 2000)
     })
   }
@@ -70,7 +54,7 @@ fly.uploadFile =(url, file_path) => wsApi.uploadFile({
   name: 'file',
   header: {
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + store.state.authorization,
+    'Authorization': store.state.authorization,
   }
 }).then(res => {
   return JSON.parse(res.data)
