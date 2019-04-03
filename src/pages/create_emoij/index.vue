@@ -1,56 +1,91 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="emoij_template">
     <div class="emoij-wrapper">
       <div class="emoij-item">
-        <image class="emoij" mode="aspectFit" :src="emate_template.default_url"></image>
+        <image class="emoij" mode="aspectFit" :src="emoij_template.image_url" v-if="!create_image" @click="viewTemplateImage"></image>
+        <image class="emoij" mode="aspectFit" :src="create_image" v-if="create_image" @click="viewCreateImage"></image>
       </div>
     </div>
     <div class="create-form">
-      <div class="form-item" v-for="(item, index) in emate_template.default_content" :key="index">
+      <div class="form-item" v-for="(item, index) in emoij_template.sentence" :key="index">
         <input type="text" :placeholder="item" :data-index="index" @input="handleInput">
       </div>
       <div class="form-submit">
-        <div class="submit-btn">点击生成</div>
+        <div class="submit-btn" @click="submit">点击生成</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+  import wsApi from "../../utils/wsApi";
+
   export default {
     name: "index",
     data() {
       return {
-        emate_template: {
-          id: 1,
-          default_url: 'https://app.xuty.tk/static/upload/6_6c5a89ec586e4c8a161835697b27e098.gif',
-          content_length: 5,
-          default_content: [
-            '好啊',
-            '别说我是一等良民',
-            '就算你们真的想要诬告我',
-            '我有的是钱请律师帮我打官司',
-            '我想我根本不用坐牢',
-            '你别以为有钱了不起啊',
-            'sorry 有钱真的了不起',
-            '不过我想你不会明白这种感觉',
-            '不明白 不明白'
-          ],
-          content: [
-
-          ]
-        }
+        emoij_template: null,
+        sentences: [],
+        create_image: ''
       }
     },
     created() {
 
     },
     mounted() {
-
+      let id = this.$root.$mp.query.id
+      this.getEmoijTemplate(id)
     },
     methods: {
+      getEmoijTemplate(id) {
+        let that = this
+        wsApi.showLoading()
+        that.$http.get('/emoji/detail?id=' + id).then(res => {
+          wsApi.hideLoading()
+          that.emoij_template = res
+          for (let i in res.sentence) {
+            that.sentences.push("")
+          }
+        }).catch(err => {
+          wsApi.hideLoading()
+          console.log(err)
+        })
+      },
       handleInput(event) {
-
+        let value = event.mp.detail.value
+        let index = event.mp.currentTarget.dataset.index
+        this.sentences[index] = value
+      },
+      submit(event) {
+        let that = this
+        for (let i in that.sentences) {
+          if (that.sentences[i] == '') {
+            that.sentences[i] = that.emoij_template.sentence[i]
+          }
+        }
+        wsApi.showLoading()
+        that.$http.post('/emoji/create?encode=' + that.emoij_template.md5_encode, {
+          sentence: that.sentences.join('|')
+        }).then(res => {
+          wsApi.hideLoading()
+          wsApi.toastSuccess('创建成功')
+          that.create_image = res.image_url
+        }).catch(err => {
+          wsApi.hideLoading()
+          console.log(err)
+        })
+      },
+      viewTemplateImage() {
+        wsApi.previewImage({
+          current: this.emoij_template.image_url,
+          urls: [this.emoij_template.image_url]
+        })
+      },
+      viewCreateImage() {
+        wsApi.previewImage({
+          current: this.create_image,
+          urls: [this.create_image]
+        })
       }
     },
   }
@@ -64,6 +99,9 @@
   }
   .emoij-wrapper{
     background-color: #FFFFFF;
+  }
+  .emoij-item{
+    margin-top: 0;
   }
   .create-form{
     width: 100%;

@@ -167,6 +167,7 @@ page, .container{
   border-radius: 10rpx;
   overflow: hidden;
   margin-top: 30rpx;
+  margin-bottom: 30rpx;
 }
 .emoij-item .emoij{
   margin: 20rpx;

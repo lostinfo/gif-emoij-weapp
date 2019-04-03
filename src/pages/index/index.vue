@@ -15,7 +15,7 @@
         <div class="title">热门表情</div>
         <div class="desc">有趣的表情</div>
       </div>
-      <div class="block-content">
+      <div class="block-content" v-if="user">
         <div class="emoij-list">
           <div class="emoij-item" v-for="(emoij, index) in emoij_list" :key="index" :data-id="emoij.id" @click="toEmoijInfo">
             <image class="emoij" mode="aspectFit" :src="emoij.cover_url"></image>
@@ -37,6 +37,9 @@
           </div>
         </div>
       </div>
+      <div v-if="!user">
+        <button class="login-btn" open-type="getUserInfo" @getuserinfo="onGetUserInfo">登录体验</button>
+      </div>
     </div>
   </div>
 </template>
@@ -55,7 +58,9 @@
       scrollFooter
     },
     computed: {
-
+      user() {
+        return this.$store.state.user
+      }
     },
     created() {
 
@@ -81,8 +86,11 @@
       },
       toEmoijInfo(event) {
         let id = event.mp.currentTarget.dataset.id
+        // wsApi.navigateTo({
+        //   url: '/pages/emoij_info/main?id=' + id
+        // })
         wsApi.navigateTo({
-          url: '/pages/emoij_info/main?id=' + id
+          url: '/pages/create_emoij/main?id=' + id
         })
       },
       onGetUserInfo(event) {
@@ -174,5 +182,13 @@
   }
   .index-block .block-content{
 
+  }
+  .login-btn{
+    margin: 30rpx 60rpx;
+    width: 630rpx;
+    box-sizing: border-box;
+    border: unset;
+    background-color: unset;
+    color: #999999;
   }
 </style>
